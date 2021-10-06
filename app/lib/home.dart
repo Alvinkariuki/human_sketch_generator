@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:human_generator/drawingarea.dart';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   @override
@@ -9,6 +12,31 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<DrawingArea> points = [];
+
+  void fetchResponse(var base64Image) async {
+    var data = {"Image": base64Image};
+
+    var url = 'http://192.168.1.14:5000/predict';
+    Map<String, String> headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Connection': 'Keep-Alive',
+    };
+
+    var body = json.encode(data);
+
+    try {
+      var response =
+          await http.post(Uri.parse(url), body: body, headers: headers);
+
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      String outputBytes = responseData['Image'];
+    } catch (e) {
+      print('* Error has occurred');
+
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
