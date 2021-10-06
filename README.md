@@ -2,4 +2,4 @@
 
 Human sketch prediction app with pix2pix machine learning 
 
-![Sample Image](sampleImage.png)
+![Sample Image](https://github.com/Alvinkariuki/human_sketch_generator/blob/master/sampleImage.PNG)
