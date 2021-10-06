@@ -15,6 +15,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<DrawingArea> points = [];
 
+  Widget imageOutput;
+
   void saveToImage(List<DrawingArea> points) async {
     final recorder = ui.PictureRecorder();
     final canvas =
@@ -66,11 +68,29 @@ class _HomeState extends State<Home> {
 
       final Map<String, dynamic> responseData = json.decode(response.body);
       String outputBytes = responseData['Image'];
+
+      print(outputBytes.substring(2, outputBytes.length - 1));
+      displayResponseImage(outputBytes.substring(2, outputBytes.length - 1));
     } catch (e) {
       print('* Error has occurred');
 
       return null;
     }
+  }
+
+  void displayResponseImage(String bytes) async {
+    Uint8List convertedBytes = base64Decode(bytes);
+
+    setState(() {
+      imageOutput = Container(
+        width: 256,
+        height: 256,
+        child: Image.memory(
+          convertedBytes,
+          fit: BoxFit.cover,
+        ),
+      );
+    });
   }
 
   @override
@@ -144,6 +164,7 @@ class _HomeState extends State<Home> {
                         );
                       },
                       onPanEnd: (details) {
+                        saveToImage(points);
                         this.setState(
                           () {
                             points.add(null);
@@ -190,6 +211,18 @@ class _HomeState extends State<Home> {
                         },
                       ),
                     ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                  child: Container(
+                    child: Center(
+                      child: Container(
+                        height: 256,
+                        width: 256,
+                        child: imageOutput,
+                      ),
+                    ),
                   ),
                 )
               ],

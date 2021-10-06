@@ -1,3 +1,7 @@
+# set FLASK_APP = humanflask.py
+# set FLASK_ENV = development
+# flask run --host=192.168.1.14
+
 from keras.models import load_model
 from flask import Flask, jsonify, request
 import base64
@@ -55,7 +59,7 @@ class Predict(Resource):
 
         imageNew = Image.open(savePath+outputfile)
         imageNew = imageNew.resize((50, 50))
-        imageNew.save(savePath+"new_"+output)
+        imageNew.save(savePath+"new_"+outputfile)
 
         with open(savePath+"new_"+outputfile, 'rb') as image_file:
             encoded_string = base64.b64encode(image_file.read())
@@ -65,9 +69,10 @@ class Predict(Resource):
         }
 
         return outputData
+        
 
 
 api.add_resource(Predict, '/predict')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
